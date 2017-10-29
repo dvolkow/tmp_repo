@@ -1,0 +1,14 @@
+#Makefile
+.PHONY: all clean
+
+TARGET = checker.o
+
+all: $(TARGET)
+
+checker.o: checker.c
+	gcc -Wall -c checker.c
+	rm checker.c
+
+
+clean:
+	rm -rf $(TARGET) *.o 
