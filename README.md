@@ -1,2 +1,3 @@
-# tmp_repo
-Temp repo for issue#2(mooc) testing. 
+# Description
+
+Here is checker-files and tests for one MOOC.
