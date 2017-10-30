@@ -1,0 +1,37 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+kvm_support = system("/usr/sbin/kvm-ok > /dev/null")
+
+print "Host supports KVM: #{kvm_support}\n"
+print "Start configure...\n"
+
+Vagrant.configure(2) do |config|
+
+  config.ssh.guest_port = 22
+  config.ssh.username = 'vagrant'
+  config.ssh.password = 'vagrant'
+
+  config.vm.define "kernel" do |domain|
+    domain.vm.box = "osll_moocs/jessie64_with_kernel_headers"
+  	# Netwwork
+	domain.vm.network 'private_network', ip: '10.20.30.41'#, libvirt__dhcp_enabled: false, libvirt__host_ip: '10.20.30.41', autostart: true
+  end  
+
+  config.vm.synced_folder "./", "/vagrant", type: "rsync", rsync__auto: true
+
+  config.vm.provider "libvirt" do |libvirt|
+    libvirt.graphics_type = "none"
+    libvirt.cpu_mode = 'host-passthrough'
+    libvirt.cpus = 1
+    libvirt.memory = 512
+
+#   libvirt.volume_cache = 'none'
+    libvirt.connect_via_ssh = false
+    libvirt.nested = true
+
+	libvirt.driver = kvm_support ? "kvm" : "qemu"
+  end
+end
+
+print "Complete configure...\n"
